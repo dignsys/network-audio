@@ -1,0 +1,13 @@
+.sign
+.vscode
+/Debug/
+/SA_Report/
+res/certificate.pem
+res/privatekey.der
+.cproject
+.exportMap
+.package-stamp
+.project
+.smartthingsapp
+.tproject
+.sign/.manifest.tmp
