@@ -18,6 +18,9 @@
 #include "st_things.h"
 #include "log.h"
 
+extern char* get_artist();
+extern char* get_title();
+
 static const char* KEY_THUMBNAIL = "thumbnail";
 static const char* KEY_TRACKDESCRIPTION = "trackDescription";
 static const char* KEY_TRACKNUMBER = "trackNumber";
@@ -32,28 +35,36 @@ bool handle_get_request_on_resource_capability_audiotrackdata(st_things_get_requ
     DBG("Received a GET request on %s\n", req_msg->resource_uri);
 
     if (req_msg->has_property_key(req_msg, KEY_THUMBNAIL)) {
-        // TODO: Write your implementation in this section.
+        DBG("thumnail [%s]", "");
+        resp_rep->set_str_value(resp_rep, KEY_THUMBNAIL, "");
     }
     if (req_msg->has_property_key(req_msg, KEY_TRACKDESCRIPTION)) {
-        // TODO: Write your implementation in this section.
+        DBG("trackDescription [%s]", "");
+        resp_rep->set_str_value(resp_rep, KEY_TRACKDESCRIPTION, "");
     }
     if (req_msg->has_property_key(req_msg, KEY_TRACKNUMBER)) {
-        // TODO: Write your implementation in this section.
+        DBG("trackNumber [%s]", "");
+        resp_rep->set_str_value(resp_rep, KEY_TRACKNUMBER, "");
     }
     if (req_msg->has_property_key(req_msg, KEY_ARTIST)) {
-        // TODO: Write your implementation in this section.
+        DBG("artist [%s]", "");
+        resp_rep->set_str_value(resp_rep, KEY_ARTIST, get_artist());
     }
     if (req_msg->has_property_key(req_msg, KEY_ALBUM)) {
-        // TODO: Write your implementation in this section.
+        DBG("album [%s]", "");
+        resp_rep->set_str_value(resp_rep, KEY_ALBUM, "");
     }
     if (req_msg->has_property_key(req_msg, KEY_STATION)) {
-        // TODO: Write your implementation in this section.
+        DBG("station [%s]", "");
+        resp_rep->set_str_value(resp_rep, KEY_STATION, "");
     }
     if (req_msg->has_property_key(req_msg, KEY_TRACKURI)) {
-        // TODO: Write your implementation in this section.
+        DBG("trackUri [%s]", "");
+        resp_rep->set_str_value(resp_rep, KEY_TRACKURI, "");
     }
     if (req_msg->has_property_key(req_msg, KEY_TITLE)) {
-        // TODO: Write your implementation in this section.
+        DBG("title [%s]", "");
+        resp_rep->set_str_value(resp_rep, KEY_TITLE, get_title());
     }
-    return false;  // FIXME: Modify this line with the appropriate return value.
+    return true;
 }

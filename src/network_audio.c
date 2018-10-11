@@ -43,6 +43,7 @@ extern player_h g_player;
 
 /* resource handler */
 extern bool user_player_init();
+extern bool user_player_stop();
 
 /* get and set request handlers */
 extern bool handle_get_request_on_resource_capability_switch(st_things_get_request_message_s* req_msg, st_things_representation_s* resp_rep);
@@ -233,6 +234,7 @@ static void service_app_terminate(void *user_data)
 	int ret;
 
 	// release player handle
+	user_player_stop();
 	ret = player_destroy(g_player);
 	if (ret != PLAYER_ERROR_NONE) {
 		ERR("player_destroy is failed [%d]", ret);
