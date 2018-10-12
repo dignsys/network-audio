@@ -47,7 +47,7 @@ bool handle_get_request_on_resource_capability_audiotrackdata(st_things_get_requ
         resp_rep->set_str_value(resp_rep, KEY_TRACKNUMBER, "");
     }
     if (req_msg->has_property_key(req_msg, KEY_ARTIST)) {
-        DBG("artist [%s]", "");
+        DBG("artist [%s]", get_artist());
         resp_rep->set_str_value(resp_rep, KEY_ARTIST, get_artist());
     }
     if (req_msg->has_property_key(req_msg, KEY_ALBUM)) {
@@ -63,7 +63,7 @@ bool handle_get_request_on_resource_capability_audiotrackdata(st_things_get_requ
         resp_rep->set_str_value(resp_rep, KEY_TRACKURI, "");
     }
     if (req_msg->has_property_key(req_msg, KEY_TITLE)) {
-        DBG("title [%s]", "");
+        DBG("title [%s]", get_title());
         resp_rep->set_str_value(resp_rep, KEY_TITLE, get_title());
     }
     return true;

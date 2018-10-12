@@ -19,16 +19,18 @@
 #include "st_things.h"
 #include "player.h"
 #include "log.h"
+#include "resource_network_audio.h"
 
+// 3 samples for playing
+#define NO_OF_PLAYLIST	3
 static struct _playlist {
 	char*  title;
 	char*  artist;
 	char*  filename;
-	int8_t length;
 } g_playlist[3] = {
-	{ "Shine"    , "Declan DP", "Declan-DP-Shine.mp3", 19 },
-	{ "Feel Good", "MBB"      , "Feel-Good.wav"      , 13 },
-	{ "Alive"    , "Ikson"    , "Ikson-Alive.wav"    , 15 },
+	{ "Shine"    , "Declan DP", "Declan-DP-Shine.mp3" },
+	{ "Feel Good", "MBB"      , "Feel-Good.wav"       },
+	{ "Alive"    , "Ikson"    , "Ikson-Alive.wav"     },
 };
 
 player_h g_player;
@@ -36,7 +38,6 @@ player_h g_player;
 static int8_t g_playmode;
 static int8_t g_playindex;
 
-// #define AUDIO_FILE_NAME "sample.mp3"
 static char audio_file[128];
 static char title[128];
 static char artist[128];
@@ -44,8 +45,6 @@ static char artist[128];
 /* player : get mute */
 bool user_player_is_muted(bool *muted)
 {
-	FN_CALL;
-
 	int ret;
 	ret = player_is_muted(g_player, muted);
 	if (ret != PLAYER_ERROR_NONE) {
@@ -59,8 +58,6 @@ bool user_player_is_muted(bool *muted)
 /* player : set mute */
 bool user_player_set_mute(bool muted)
 {
-	FN_CALL;
-
 	int ret;
 	ret = player_set_mute(g_player, muted);
 	if (ret != PLAYER_ERROR_NONE) {
@@ -74,8 +71,6 @@ bool user_player_set_mute(bool muted)
 /* player : set volume */
 bool user_player_set_volume(float vol)
 {
-	FN_CALL;
-
 	int ret;
 	ret = player_set_volume(g_player, vol, vol);
 	if (ret != PLAYER_ERROR_NONE) {
@@ -89,8 +84,6 @@ bool user_player_set_volume(float vol)
 /* player : get volume */
 bool user_player_get_volume(float *vol)
 {
-	FN_CALL;
-
 	int ret;
 	float vol2;
 	ret = player_get_volume(g_player, vol, &vol2);
@@ -105,8 +98,6 @@ bool user_player_get_volume(float *vol)
 /* player : start player */
 bool user_player_start()
 {
-	FN_CALL;
-
 	int ret;
 	ret = player_set_uri(g_player, audio_file);
 	if (ret != PLAYER_ERROR_NONE) {
@@ -130,8 +121,6 @@ bool user_player_start()
 /* player : resume player */
 bool user_player_resume()
 {
-	FN_CALL;
-
 	int ret;
 
 	ret = player_start(g_player);
@@ -146,8 +135,6 @@ bool user_player_resume()
 /* player : stop player */
 bool user_player_stop()
 {
-	FN_CALL;
-
 	int ret;
 	ret = player_stop(g_player);
 	if (ret != PLAYER_ERROR_NONE) {
@@ -166,8 +153,6 @@ bool user_player_stop()
 /* player : pause player */
 bool user_player_pause()
 {
-	FN_CALL;
-
 	int ret;
 	ret = player_pause(g_player);
 	if (ret != PLAYER_ERROR_NONE) {
@@ -181,8 +166,6 @@ bool user_player_pause()
 /* player : get state */
 player_state_e user_player_get_state()
 {
-	FN_CALL;
-
 	player_state_e state;
 	int ret;
 	ret = player_get_state(g_player, &state);
@@ -216,32 +199,44 @@ player_state_e user_player_get_state()
 	return state;
 }
 
-int8_t get_playmode()
+/**
+ * @brief  get the current mode
+ * @return @c MODE_PLAY: play, MODE_STOP: stop, MODE_PAUSE: pause
+ */
+play_mode_e get_playmode()
 {
 	return g_playmode;
 }
 
-void set_playmode(int8_t mode)
+/**
+ * @param[in] mode MODE_PLAY: play, MODE_STOP: stop, MODE_PAUSE: pause
+ */
+void set_playmode(play_mode_e mode)
 {
 	g_playmode = mode;
 }
 
-int8_t get_playindex()
+/**
+ * @brief  get the current location of the playlist
+ * @return @c INDEX_INIT: init INDEX_NEXT: increase, INDEX_PREV: decrease
+ */
+play_index_e get_playindex()
 {
 	return g_playindex;
 }
 
 /**
- * @param index 0: init 1: increase, -1: decrease
+ * @param[in] index INDEX_INIT: init INDEX_NEXT: increase, INDEX_PREV: decrease
  */
-void set_playindex(int8_t index)
+void set_playindex(play_index_e index)
 {
-	if (1 == index) {
-		g_playindex = (++g_playindex <= 2) ? g_playindex : 0;
-	} else if (-1 == index) {
-		g_playindex = (--g_playindex >= 0) ? g_playindex : 2;
+	if (INDEX_NEXT == index) {
+		g_playindex = (++g_playindex < NO_OF_PLAYLIST) ? g_playindex : 0;
+	} else if (INDEX_PREV == index) {
+		g_playindex = (--g_playindex >= 0) ? g_playindex : NO_OF_PLAYLIST - 1;
 	} else {
-		g_playindex = index;
+		// INDEX_INIT
+		g_playindex = 0;
 	}
 	DBG("set_playindex: [index = %d, g_playindex = %d]", index, g_playindex);
 }
@@ -274,8 +269,6 @@ char* get_title()
 /* player : init player */
 bool user_player_init()
 {
-	FN_CALL;
-
 	int ret;
 	ret = player_create(&g_player);
 	if (ret != PLAYER_ERROR_NONE) {
@@ -292,8 +285,8 @@ bool user_player_init()
 	 * default playmode  = "stop"
 	 * default playindex = 0
 	*/
-	set_playmode(1);
-	set_playindex(0);
+	set_playmode(MODE_STOP);
+	set_playindex(INDEX_INIT);
 	set_playinfo(g_playindex);
 
 	return true;

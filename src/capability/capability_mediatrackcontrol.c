@@ -17,23 +17,23 @@
 #include "st_things.h"
 #include "player.h"
 #include "log.h"
+#include "resource_network_audio.h"
 
-#define RES_CAPABILITY_AUDIOTRACKDATA_MAIN_0 "/capability/audioTrackData/main/0"
-
-extern int8_t get_playindex();
-extern void   set_playindex();
-extern void   set_playinfo();
 extern player_state_e user_player_get_state();
+extern play_index_e get_playindex();
+extern void set_playindex();
+extern void set_playinfo();
 extern bool user_player_stop();
 extern bool user_player_start();
 
 static const char* KEY_MODES = "modes";
 static const char* KEY_SUPPORTEDMODES = "supportedModes";
 
-static const char* g_supportedmodes[2] = { "previous", "next" };
+static const char* g_supportedmodes[2] = { PREV, NEXT };
 static size_t g_length = 2;
 
-static int8_t g_modes = 1;
+// next
+static int8_t g_modes = INDEX_NEXT;
 
 bool handle_get_request_on_resource_capability_mediatrackcontrol(st_things_get_request_message_s* req_msg, st_things_representation_s* resp_rep)
 {
@@ -58,6 +58,7 @@ bool handle_set_request_on_resource_capability_mediatrackcontrol(st_things_set_r
 	player_state_e state;
 	uint32_t* str_value[2];
     size_t length;
+	int i;
 
 	req_msg->rep->get_str_array_value(req_msg->rep, KEY_MODES, (char ***)&str_value, &length);
 	DBG("requested mediatrackcontrol: [%s]", str_value);
@@ -65,17 +66,18 @@ bool handle_set_request_on_resource_capability_mediatrackcontrol(st_things_set_r
 	/* check validation */
 	//  previous
 	if (0 == strncmp((const char*)*str_value[0], g_supportedmodes[0], strlen(g_supportedmodes[0]))) {
-		g_modes = 0;
-		set_playindex(-1);
+		g_modes = INDEX_PREV;
+		set_playindex(INDEX_PREV);
 		set_playinfo(get_playindex());
 	// next
 	} else if (0 == strncmp((const char*)*str_value[0], g_supportedmodes[1], strlen(g_supportedmodes[1]))) {
-		g_modes = 1;
-		set_playindex(1);
+		g_modes = INDEX_NEXT;
+		set_playindex(INDEX_NEXT);
 		set_playinfo(get_playindex());
 	} else {
 		ERR("Not supported value!!");
-		// free(str_value);
+		for(i=0; i<length; i++)
+			free((void*)*str_value[i]);
 		return false;
 	}
 
@@ -106,7 +108,8 @@ bool handle_set_request_on_resource_capability_mediatrackcontrol(st_things_set_r
 	// update request for title and artist info
 	st_things_notify_observers(RES_CAPABILITY_AUDIOTRACKDATA_MAIN_0);
 
-	// free(str_value);
+	for(i=0; i<length; i++)
+		free((void*)*str_value[i]);
 
     return true;
 }

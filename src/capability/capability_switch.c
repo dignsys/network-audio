@@ -16,6 +16,7 @@
 
 #include "st_things.h"
 #include "log.h"
+#include "resource_network_audio.h"
 
 #define VALUE_STR_LEN_MAX 32
 
@@ -26,6 +27,7 @@ static char g_switch[VALUE_STR_LEN_MAX+1] = "off";
 
 extern bool user_player_start();
 extern bool user_player_stop();
+extern void set_playmode();
 
 bool handle_get_request_on_resource_capability_switch(st_things_get_request_message_s* req_msg, st_things_representation_s* resp_rep)
 {
@@ -58,14 +60,19 @@ bool handle_set_request_on_resource_capability_switch(st_things_set_request_mess
 
 	if (0 != strncmp(str_value, g_switch, strlen(g_switch))) {
 		strncpy(g_switch, str_value, VALUE_STR_LEN_MAX);
-		if (0 == strncmp(g_switch, VALUE_SWITCH_ON, strlen(VALUE_SWITCH_ON)))
+		if (0 == strncmp(g_switch, VALUE_SWITCH_ON, strlen(VALUE_SWITCH_ON))) {
 			user_player_start();
-		else
+	    	set_playmode(MODE_PLAY);
+		} else {
 			user_player_stop();
+	    	set_playmode(MODE_STOP);
+		}
 	}
 	resp_rep->set_str_value(resp_rep, KEY_SWITCH, g_switch);
 
 	st_things_notify_observers(req_msg->resource_uri);
+	// update request for play mode
+	st_things_notify_observers(RES_CAPABILITY_MEDIAPLAYBACK_MAIN_0);
 
 	free(str_value);
     return true;

@@ -15,19 +15,22 @@
  */
 
 #include "st_things.h"
+#include "player.h"
 #include "log.h"
+#include "resource_network_audio.h"
 
-extern int8_t get_playmode();
-extern void   set_playmode();
-extern bool   user_player_start();
-extern bool   user_player_resume();
-extern bool   user_player_stop();
-extern bool   user_player_pause();
+extern player_state_e user_player_get_state();
+extern play_mode_e get_playmode();
+extern void set_playmode();
+extern bool user_player_resume();
+extern bool user_player_start();
+extern bool user_player_stop();
+extern bool user_player_pause();
 
 static const char* KEY_MODES = "modes";
 static const char* KEY_SUPPORTEDMODES = "supportedModes";
 
-static const char* g_supportedmodes[3] = { "play", "stop", "pause" };
+static const char* g_supportedmodes[3] = { PLAY, STOP, PAUSE };
 static size_t g_length = 3;
 
 bool handle_get_request_on_resource_capability_mediaplayback(st_things_get_request_message_s* req_msg, st_things_representation_s* resp_rep)
@@ -35,7 +38,7 @@ bool handle_get_request_on_resource_capability_mediaplayback(st_things_get_reque
     DBG("Received a GET request on %s\n", req_msg->resource_uri);
 
     if (req_msg->has_property_key(req_msg, KEY_MODES)) {
-        int8_t mode = get_playmode();
+        play_mode_e mode = get_playmode();
         DBG("current g_playmode: [%d]", mode);
         resp_rep->set_str_array_value(resp_rep, KEY_MODES, (const char**)&g_supportedmodes[mode], 1);
     }
@@ -53,6 +56,7 @@ bool handle_set_request_on_resource_capability_mediaplayback(st_things_set_reque
 
 	uint32_t* str_value[2];
     size_t length;
+    int i;
 
 	req_msg->rep->get_str_array_value(req_msg->rep, KEY_MODES, (char ***)&str_value, &length);
 	DBG("requested mediaplayback: [%s]", *str_value[0]);
@@ -60,19 +64,23 @@ bool handle_set_request_on_resource_capability_mediaplayback(st_things_set_reque
 	/* check validation */
     // play
 	if (0 == strncmp((const char*)*str_value[0], g_supportedmodes[0], strlen(g_supportedmodes[0]))) {
-        set_playmode(0);
-        user_player_resume();
+        set_playmode(MODE_PLAY);
+        if(PLAYER_STATE_PAUSED == user_player_get_state())
+            user_player_resume();
+        else
+            user_player_start();
     // stop
     } else if (0 == strncmp((const char*)*str_value[0], g_supportedmodes[1], strlen(g_supportedmodes[1]))) {
-        set_playmode(1);
+        set_playmode(MODE_STOP);
         user_player_stop();
     // pause
     } else if (0 == strncmp((const char*)*str_value[0], g_supportedmodes[2], strlen(g_supportedmodes[2]))) {
-        set_playmode(2);
+        set_playmode(MODE_PAUSE);
         user_player_pause();
 	} else {
 		ERR("Not supported value!!");
-		// free(**str_value);
+       for(i=0; i<length; i++)
+           free((void*)*str_value[i]);
 		return false;
 	}
 
@@ -82,7 +90,8 @@ bool handle_set_request_on_resource_capability_mediaplayback(st_things_set_reque
 
 	st_things_notify_observers(req_msg->resource_uri);
 
-	// free(**str_value);
+	for(i=0; i<length; i++)
+		free((void*)*str_value[i]);
 
     return true;
 }
