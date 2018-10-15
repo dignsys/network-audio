@@ -1,0 +1,39 @@
+{
+  "name": "network audio",
+  "components": [
+    {
+      "id": "main",
+      "capabilities": [
+        {
+          "id": "switch"
+        },
+        {
+          "id": "audioTrackData"
+        },
+        {
+          "id": "audioVolume"
+        },
+        {
+          "id": "mediaPlayback"
+        },
+        {
+          "id": "mediaPlaybackRepeat"
+        },
+        {
+          "id": "mediaPlaybackShuffle"
+        },
+        {
+          "id": "mediaTrackControl"
+        },
+        {
+          "id": "mediaInputSource"
+        }
+      ]
+    }
+  ],
+  "metadata": {
+    "mnmn": "*** YOUR mnmn ****",
+    "vid": "*** YOUR vid ***",
+    "deviceType": "NetworkAudio"
+  }
+}

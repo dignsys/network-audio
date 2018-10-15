@@ -11,3 +11,4 @@ res/privatekey.der
 .smartthingsapp
 .tproject
 .sign/.manifest.tmp
+plugin/.project.json
