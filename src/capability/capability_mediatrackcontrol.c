@@ -61,7 +61,7 @@ bool handle_set_request_on_resource_capability_mediatrackcontrol(st_things_set_r
 	int i;
 
 	req_msg->rep->get_str_array_value(req_msg->rep, KEY_MODES, (char ***)&str_value, &length);
-	DBG("requested mediatrackcontrol: [%s]", str_value);
+	DBG("requested mediatrackcontrol: [%s]", *str_value[0]);
 
 	/* check validation */
 	//  previous

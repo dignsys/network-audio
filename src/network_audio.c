@@ -25,19 +25,9 @@
 
 static const char* RES_CAPABILITY_SWITCH_MAIN_0 = "/capability/switch/main/0";
 static const char* RES_CAPABILITY_AUDIOVOLUME_MAIN_0 = "/capability/audioVolume/main/0";
-static const char* RES_CAPABILITY_MEDIAINPUTSOURCE_MAIN_0 = "/capability/mediaInputSource/main/0";
 static const char* RES_CAPABILITY_MEDIAPLAYBACK_MAIN_0 = "/capability/mediaPlayback/main/0";
 static const char* RES_CAPABILITY_MEDIATRACKCONTROL_MAIN_0 = "/capability/mediaTrackControl/main/0";
-static const char* RES_CAPABILITY_MEDIAPLAYBACKREPEAT_MAIN_0 = "/capability/mediaPlaybackRepeat/main/0";
-static const char* RES_CAPABILITY_MEDIAPLAYBACKSHUFFLE_MAIN_0 = "/capability/mediaPlaybackShuffle/main/0";
 static const char* RES_CAPABILITY_AUDIOTRACKDATA_MAIN_0 = "/capability/audioTrackData/main/0";
-
-/*
-#define MUTEX_LOCK		pthread_mutex_lock(&mutex)
-#define MUTEX_UNLOCK	pthread_mutex_unlock(&mutex)
-
-pthread_mutex_t  mutex = PTHREAD_MUTEX_INITIALIZER;
-*/
 
 extern player_h g_player;
 
@@ -50,16 +40,10 @@ extern bool handle_get_request_on_resource_capability_switch(st_things_get_reque
 extern bool handle_set_request_on_resource_capability_switch(st_things_set_request_message_s* req_msg, st_things_representation_s* resp_rep);
 extern bool handle_get_request_on_resource_capability_audiovolume(st_things_get_request_message_s* req_msg, st_things_representation_s* resp_rep);
 extern bool handle_set_request_on_resource_capability_audiovolume(st_things_set_request_message_s* req_msg, st_things_representation_s* resp_rep);
-extern bool handle_get_request_on_resource_capability_mediainputsource(st_things_get_request_message_s* req_msg, st_things_representation_s* resp_rep);
-extern bool handle_set_request_on_resource_capability_mediainputsource(st_things_set_request_message_s* req_msg, st_things_representation_s* resp_rep);
 extern bool handle_get_request_on_resource_capability_mediaplayback(st_things_get_request_message_s* req_msg, st_things_representation_s* resp_rep);
 extern bool handle_set_request_on_resource_capability_mediaplayback(st_things_set_request_message_s* req_msg, st_things_representation_s* resp_rep);
 extern bool handle_get_request_on_resource_capability_mediatrackcontrol(st_things_get_request_message_s* req_msg, st_things_representation_s* resp_rep);
 extern bool handle_set_request_on_resource_capability_mediatrackcontrol(st_things_set_request_message_s* req_msg, st_things_representation_s* resp_rep);
-extern bool handle_get_request_on_resource_capability_mediaplaybackrepeat(st_things_get_request_message_s* req_msg, st_things_representation_s* resp_rep);
-extern bool handle_set_request_on_resource_capability_mediaplaybackrepeat(st_things_set_request_message_s* req_msg, st_things_representation_s* resp_rep);
-extern bool handle_get_request_on_resource_capability_mediaplaybackshuffle(st_things_get_request_message_s* req_msg, st_things_representation_s* resp_rep);
-extern bool handle_set_request_on_resource_capability_mediaplaybackshuffle(st_things_set_request_message_s* req_msg, st_things_representation_s* resp_rep);
 extern bool handle_get_request_on_resource_capability_audiotrackdata(st_things_get_request_message_s* req_msg, st_things_representation_s* resp_rep);
 
 /* handle : for getting request on resources */
@@ -73,20 +57,11 @@ bool handle_get_request(st_things_get_request_message_s* req_msg, st_things_repr
     if (0 == strcmp(req_msg->resource_uri, RES_CAPABILITY_AUDIOVOLUME_MAIN_0)) {
         return handle_get_request_on_resource_capability_audiovolume(req_msg, resp_rep);
     }
-    if (0 == strcmp(req_msg->resource_uri, RES_CAPABILITY_MEDIAINPUTSOURCE_MAIN_0)) {
-        return handle_get_request_on_resource_capability_mediainputsource(req_msg, resp_rep);
-    }
     if (0 == strcmp(req_msg->resource_uri, RES_CAPABILITY_MEDIAPLAYBACK_MAIN_0)) {
         return handle_get_request_on_resource_capability_mediaplayback(req_msg, resp_rep);
     }
     if (0 == strcmp(req_msg->resource_uri, RES_CAPABILITY_MEDIATRACKCONTROL_MAIN_0)) {
         return handle_get_request_on_resource_capability_mediatrackcontrol(req_msg, resp_rep);
-    }
-    if (0 == strcmp(req_msg->resource_uri, RES_CAPABILITY_MEDIAPLAYBACKREPEAT_MAIN_0)) {
-        return handle_get_request_on_resource_capability_mediaplaybackrepeat(req_msg, resp_rep);
-    }
-    if (0 == strcmp(req_msg->resource_uri, RES_CAPABILITY_MEDIAPLAYBACKSHUFFLE_MAIN_0)) {
-        return handle_get_request_on_resource_capability_mediaplaybackshuffle(req_msg, resp_rep);
     }
     if (0 == strcmp(req_msg->resource_uri, RES_CAPABILITY_AUDIOTRACKDATA_MAIN_0)) {
         return handle_get_request_on_resource_capability_audiotrackdata(req_msg, resp_rep);
@@ -107,20 +82,11 @@ bool handle_set_request(st_things_set_request_message_s* req_msg, st_things_repr
     if (0 == strcmp(req_msg->resource_uri, RES_CAPABILITY_AUDIOVOLUME_MAIN_0)) {
         return handle_set_request_on_resource_capability_audiovolume(req_msg, resp_rep);
     }
-    if (0 == strcmp(req_msg->resource_uri, RES_CAPABILITY_MEDIAINPUTSOURCE_MAIN_0)) {
-        return handle_set_request_on_resource_capability_mediainputsource(req_msg, resp_rep);
-    }
     if (0 == strcmp(req_msg->resource_uri, RES_CAPABILITY_MEDIAPLAYBACK_MAIN_0)) {
         return handle_set_request_on_resource_capability_mediaplayback(req_msg, resp_rep);
     }
     if (0 == strcmp(req_msg->resource_uri, RES_CAPABILITY_MEDIATRACKCONTROL_MAIN_0)) {
         return handle_set_request_on_resource_capability_mediatrackcontrol(req_msg, resp_rep);
-    }
-    if (0 == strcmp(req_msg->resource_uri, RES_CAPABILITY_MEDIAPLAYBACKREPEAT_MAIN_0)) {
-        return handle_set_request_on_resource_capability_mediaplaybackrepeat(req_msg, resp_rep);
-    }
-    if (0 == strcmp(req_msg->resource_uri, RES_CAPABILITY_MEDIAPLAYBACKSHUFFLE_MAIN_0)) {
-        return handle_set_request_on_resource_capability_mediaplaybackshuffle(req_msg, resp_rep);
     }
 
     ERR("not supported uri");
@@ -140,7 +106,7 @@ bool handle_reset_request(void)
 
 void handle_reset_result(bool result)
 {
-    DBG("Reset %s.\n", result ? "succeeded" : "failed");
+    DBG("Reset %s.", result ? "succeeded" : "failed");
 }
 
 bool handle_ownership_transfer_request(void)
@@ -155,7 +121,7 @@ bool handle_ownership_transfer_request(void)
 
 void handle_things_status_change(st_things_status_e things_status)
 {
-    DBG("Things status is changed: %d\n", things_status);
+    DBG("Things status is changed: %d", things_status);
 }
 
 bool init_user() {

@@ -25,13 +25,6 @@ static int64_t g_volume;
 static const char* KEY_MUTE = "mute";
 static bool g_mute;
 
-static const char* KEY_VOLUME_COMMAND = "command";
-static const char* VALUE_VOLUME_COMMAND_INC = "increase";
-static const char* VALUE_VOLUME_COMMAND_DEC = "decrease";
-static const char* VALUE_VOLUME_COMMAND_MAX = "max";
-static const char* VALUE_VOLUME_COMMAND_MIN = "min";
-static char g_volume_cmd[VALUE_STR_LEN_MAX+1] = "increase";
-
 extern bool user_player_get_volume(float *vol);
 extern bool user_player_is_muted(bool *muted);
 extern bool user_player_set_mute(bool muted);
@@ -58,9 +51,6 @@ bool handle_get_request_on_resource_capability_audiovolume(st_things_get_request
 		resp_rep->set_bool_value(resp_rep, KEY_MUTE, g_mute);
 	}
 
-	if (req_msg->has_property_key(req_msg, KEY_VOLUME_COMMAND))
-		WARN("key[%s] exists..Ignore It!", KEY_VOLUME_COMMAND);
-
     return true;
 }
 
@@ -84,26 +74,6 @@ bool handle_set_request_on_resource_capability_audiovolume(st_things_set_request
 		g_mute = bvalue;
 		user_player_set_mute(g_mute);
 		resp_rep->set_bool_value(resp_rep, KEY_MUTE, g_mute);
-	}
-
-	char *str_value = NULL;
-	if (req_msg->rep->get_str_value(req_msg->rep, KEY_VOLUME_COMMAND, &str_value)) {
-		DBG("requested volume_cmd: [%s]", str_value);
-
-		strncpy(g_volume_cmd, str_value, VALUE_STR_LEN_MAX);
-		if (0 == strncmp(g_volume_cmd, VALUE_VOLUME_COMMAND_INC, strlen(VALUE_VOLUME_COMMAND_INC)))
-			DBG("TODO");
-		else if (0 == strncmp(g_volume_cmd, VALUE_VOLUME_COMMAND_DEC, strlen(VALUE_VOLUME_COMMAND_DEC)))
-			DBG("TODO");
-		else if (0 == strncmp(g_volume_cmd, VALUE_VOLUME_COMMAND_MAX, strlen(VALUE_VOLUME_COMMAND_MAX)))
-			DBG("TODO");
-		else if (0 == strncmp(g_volume_cmd, VALUE_VOLUME_COMMAND_MIN, strlen(VALUE_VOLUME_COMMAND_MIN)))
-			DBG("TODO");
-		else
-			ERR("Not supported command");
-
-		resp_rep->set_str_value(resp_rep, KEY_VOLUME_COMMAND, g_volume_cmd);
-		free(str_value);
 	}
 
 	st_things_notify_observers(req_msg->resource_uri);
