@@ -32,10 +32,17 @@ var capabilityMediaTrackControl = {
 		}
 	},
 
+	"clearBg" : function (image) {
+		image.style.backgroundColor = "white";
+	},
+
 	'set' : function(value) {
 		scplugin.log.debug(className, arguments.callee.name, " media track : " + value);
+		var image = document.getElementById(`${value}Button`);
+		image.style.backgroundColor = "cyan";
 		var setRcsJson = {};
 		setRcsJson["modes"] = [value];
 		ocfDevice.setRemoteRepresentation(this.href, setRcsJson, this.onRepresentCallback);
+		setTimeout(this.clearBg, 500, image);
 	}
 }

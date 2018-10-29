@@ -35,12 +35,20 @@ var capabilityAudioVolume = {
 			var styleText = '#' + 'volume_value' + '::-webkit-slider-runnable-track{background-size:' + capabilityAudioVolume.value + '% 100%} ';
 			inlineStyle.textContent = styleText;
 			document.getElementById("volume_value").value = capabilityAudioVolume.value;
+			var image = document.getElementById("muteButton");
+			var volume = document.getElementById("volume_value");
 			if (capabilityAudioVolume.muteState == false) {
-				document.getElementById("muteButton").src = "res/controller_ic_unmute.png";
+				image.src = "res/controller_ic_unmute.png";
+				volume.disabled = false;
 			} else {
-				document.getElementById("muteButton").src = "res/controller_ic_mute.png";
+				image.src = "res/controller_ic_mute.png";
+				volume.disabled = true;
 			}
 		}
+	},
+
+	"clearBg" : function (image) {
+		image.style.backgroundColor = "white";
 	},
 
 	'setVolume' : function(value) {
@@ -53,11 +61,13 @@ var capabilityAudioVolume = {
 
 	'setMute' : function(value) {
 		scplugin.log.debug(className, arguments.callee.name, "audioVolume (mute): " + value);
+		var image = document.getElementById("muteButton");
+		image.style.backgroundColor = "cyan";
 		var setRcsJson = {};
 		setRcsJson["volume"] = this.value;
 		setRcsJson["mute"] = value;
-		alert("send capabilityAudioVolume:" + setRcsJson["volume"] + "-" + setRcsJson["mute"]);
 		ocfDevice.setRemoteRepresentation(this.href, setRcsJson, this.onRepresentCallback);
+		setTimeout(this.clearBg, 500, image);
 	},
 
 	'muteToggle' : function() {
@@ -67,5 +77,4 @@ var capabilityAudioVolume = {
 			this.setMute(false);
 		}
 	}
-
 }

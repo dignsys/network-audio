@@ -17,6 +17,12 @@
 var capabilityMediaPlayback = {
 	'href' : "/capability/mediaPlayback/main/0",
 	'value' : [ "stop" ],
+	'changeColor' : function (coll, color) {
+		for(var i=0, len=coll.length; i<len; i++)
+		{
+			coll[i].style["background-color"] = color;
+		}
+	},
 
 	'update' : function() {
 		ocfDevice.getRemoteRepresentation(this.href, this.onRepresentCallback);
@@ -30,25 +36,28 @@ var capabilityMediaPlayback = {
 			if(rcsJsonString["modes"] === undefined) return;
 			capabilityMediaPlayback.value[0] = rcsJsonString["modes"];
 
-			var image = document.getElementById("playbutton");
+			var image = document.getElementById("playButton");
 			if (capabilityMediaPlayback.value[0] == "play") {
-				image.classList.remove('paused');
-				image.classList.remove('stopped');
-			} else if (capabilityMediaPlayback.value[0] == "stop") {
-				image.classList.remove('paused');
-				image.classList.add('stopped');
+				image.disabled = false;
+				image.src = "res/controller_ic_play.png";
+			} else if (capabilityMediaPlayback.value[0] == "pause") {
+				image.disabled = false;
+				image.src = "res/controller_ic_pause.png";
 			} else {
-				image.classList.remove('stopped');
-				image.classList.add('paused');
+				image.disabled = true;
+				image.src = "res/controller_ic_play.png";
 			}
 		}
 	},
 
 	'set' : function(value) {
 		scplugin.log.debug(className, arguments.callee.name, "playback : " + value);
+		var coll = document.getElementsByClassName("play-button");
+		this.changeColor(coll,"cyan");
 		var setRcsJson = {};
 		setRcsJson["modes"] = [value];
 		ocfDevice.setRemoteRepresentation(this.href, setRcsJson, this.onRepresentCallback);
+		setTimeout(this.changeColor, 500, coll, "white");
 	},
 
 	'toggle' : function() {
