@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include <peripheral_io.h>
 #include <service_app.h>
 #include <stdio.h>
 #include "st_things.h"
@@ -22,6 +23,9 @@
 #include "player.h"
 
 #define JSON_PATH "device_def.json"
+#define LED_GPIO				128		///< GPIO_128
+#define LED_ON					1		///< High
+#define LED_OFF					0		///< Low
 
 static const char* RES_CAPABILITY_SWITCH_MAIN_0 = "/capability/switch/main/0";
 static const char* RES_CAPABILITY_AUDIOVOLUME_MAIN_0 = "/capability/audioVolume/main/0";
@@ -29,11 +33,16 @@ static const char* RES_CAPABILITY_MEDIAPLAYBACK_MAIN_0 = "/capability/mediaPlayb
 static const char* RES_CAPABILITY_MEDIATRACKCONTROL_MAIN_0 = "/capability/mediaTrackControl/main/0";
 static const char* RES_CAPABILITY_AUDIOTRACKDATA_MAIN_0 = "/capability/audioTrackData/main/0";
 
+peripheral_gpio_h led_h = NULL;
+
 extern player_h g_player;
 
 /* resource handler */
 extern bool user_player_init();
 extern bool user_player_stop();
+extern int  resource_open_led(int gpio_pin, peripheral_gpio_h *handle);
+extern int  resource_write_led(peripheral_gpio_h handle, int write_value);
+extern void resource_close_led(peripheral_gpio_h handle);
 
 /* get and set request handlers */
 extern bool handle_get_request_on_resource_capability_switch(st_things_get_request_message_s* req_msg, st_things_representation_s* resp_rep);
@@ -127,6 +136,12 @@ void handle_things_status_change(st_things_status_e things_status)
 bool init_user() {
 	bool ret = false;
 
+	/* open GPIO */
+	if (resource_open_led(LED_GPIO, &led_h) != 0) {
+		ERR("LED GPIO open failed");
+	}
+	DBG("LED GPIO opened");
+
 	ret = user_player_init();
 
 	return ret;
@@ -205,6 +220,10 @@ static void service_app_terminate(void *user_data)
 	if (ret != PLAYER_ERROR_NONE) {
 		ERR("player_destroy is failed [%d]", ret);
 	}
+
+	// clear GPIO resource
+	resource_close_led(led_h);
+	DBG("LED GPIO closed");
 }
 
 static void service_app_control(app_control_h app_control, void *user_data)

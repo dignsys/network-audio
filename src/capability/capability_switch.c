@@ -14,17 +14,22 @@
  * limitations under the License.
  */
 
+#include <peripheral_io.h>
 #include "st_things.h"
 #include "log.h"
 #include "resource_network_audio.h"
 
-#define VALUE_STR_LEN_MAX 32
+#define VALUE_STR_LEN_MAX	32
+#define LED_ON				1		// High
+#define LED_OFF				0		// Low
 
 static const char* KEY_SWITCH = "power";
 static const char* VALUE_SWITCH_ON = "on";
 static const char* VALUE_SWITCH_OFF = "off";
 static char g_switch[VALUE_STR_LEN_MAX+1] = "off";
+extern peripheral_gpio_h led_h;
 
+extern int  resource_write_led(peripheral_gpio_h handle, int write_value);
 extern bool user_player_start();
 extern bool user_player_stop();
 extern void set_playmode();
@@ -63,9 +68,13 @@ bool handle_set_request_on_resource_capability_switch(st_things_set_request_mess
 		if (0 == strncmp(g_switch, VALUE_SWITCH_ON, strlen(VALUE_SWITCH_ON))) {
 			user_player_start();
 	    	set_playmode(MODE_PLAY);
+
+			resource_write_led(led_h, LED_ON);
 		} else {
 			user_player_stop();
 	    	set_playmode(MODE_STOP);
+
+			resource_write_led(led_h, LED_OFF);
 		}
 	}
 	resp_rep->set_str_value(resp_rep, KEY_SWITCH, g_switch);
