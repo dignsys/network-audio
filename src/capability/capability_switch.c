@@ -34,6 +34,14 @@ extern bool user_player_start();
 extern bool user_player_stop();
 extern void set_playmode();
 
+bool is_switch_on()
+{
+	if (0 == strncmp(g_switch, VALUE_SWITCH_ON, strlen(g_switch)))
+		return true;
+	else
+		return false;
+}
+
 bool handle_get_request_on_resource_capability_switch(st_things_get_request_message_s* req_msg, st_things_representation_s* resp_rep)
 {
     DBG("Received a GET request on %s\n", req_msg->resource_uri);

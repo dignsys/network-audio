@@ -26,6 +26,7 @@ extern bool user_player_resume();
 extern bool user_player_start();
 extern bool user_player_stop();
 extern bool user_player_pause();
+extern bool is_switch_on();
 
 static const char* KEY_MODES = "modes";
 static const char* KEY_SUPPORTEDMODES = "supportedModes";
@@ -50,14 +51,19 @@ bool handle_get_request_on_resource_capability_mediaplayback(st_things_get_reque
 
 bool handle_set_request_on_resource_capability_mediaplayback(st_things_set_request_message_s* req_msg, st_things_representation_s* resp_rep)
 {
-    DBG("Received a SET request on %s\n", req_msg->resource_uri);
-
-	DBG("current g_playmode: [%d]", get_playmode());
-
 	uint32_t* str_value[2];
     size_t length;
     int i;
 
+    DBG("Received a SET request on %s\n", req_msg->resource_uri);
+
+    // return if power state is off
+    if(false == is_switch_on()) {
+        DBG("Return bacause power state is off\n");
+    	return false;
+    }
+
+    DBG("current g_playmode: [%d]", get_playmode());
 	req_msg->rep->get_str_array_value(req_msg->rep, KEY_MODES, (char ***)&str_value, &length);
 	DBG("requested mediaplayback: [%s]", *str_value[0]);
 
@@ -70,16 +76,18 @@ bool handle_set_request_on_resource_capability_mediaplayback(st_things_set_reque
         else
             user_player_start();
     // stop
+    /* not supported
     } else if (0 == strncmp((const char*)*str_value[0], g_supportedmodes[1], strlen(g_supportedmodes[1]))) {
         set_playmode(MODE_STOP);
         user_player_stop();
+    */
     // pause
     } else if (0 == strncmp((const char*)*str_value[0], g_supportedmodes[2], strlen(g_supportedmodes[2]))) {
         set_playmode(MODE_PAUSE);
         user_player_pause();
 	} else {
 		ERR("Not supported value!!");
-       for(i=0; i<length; i++)
+        for(i=0; i<length; i++)
            free((void*)*str_value[i]);
 		return false;
 	}
