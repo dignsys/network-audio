@@ -27,12 +27,17 @@ This project is consisted of as follows:
 ## How to build
 
 - SmartThings appliation
-  1. create tizen project using tizen studio
-  2. merge this project with newly created tizen project
+  1. import this tizen project using tizen studio
+  2. replace the manufactureName and vendorID with yours registered in samsung cloud
+     + res/device_def.json
   3. build
   4. run
 
 - SmartThings device plugin
-  1. create smartThings project using ATOM smartThings packages
-  2. merge this project with newly created ATOM smartThings project
+  1. Add project using File -> Add project folder... in ATOM
+     + select plugin folder
+  2. replace the mnmn and vid with yours registered in samsung cloud
+     + plugin/catalog.json
+     + plugin/device-profile.json
+     + plugin/manifest/ui.json
   3. install target or virtual device
