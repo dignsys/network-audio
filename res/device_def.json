@@ -45,18 +45,6 @@
             "policy": 3
           },
           {
-            "uri": "/capability/mediaInputSource/main/0",
-            "types": [
-              "x.com.st.mediainputsource"
-            ],
-            "interfaces": [
-              "oic.if.a",
-              "oic.if.s",
-              "oic.if.baseline"
-            ],
-            "policy": 3
-          },
-          {
             "uri": "/capability/mediaPlayback/main/0",
             "types": [
               "x.com.st.mediaplayer"
@@ -72,30 +60,6 @@
             "uri": "/capability/mediaTrackControl/main/0",
             "types": [
               "x.com.st.mediatrackcontrol"
-            ],
-            "interfaces": [
-              "oic.if.a",
-              "oic.if.s",
-              "oic.if.baseline"
-            ],
-            "policy": 3
-          },
-          {
-            "uri": "/capability/mediaPlaybackRepeat/main/0",
-            "types": [
-              "x.com.st.mediarepeat"
-            ],
-            "interfaces": [
-              "oic.if.a",
-              "oic.if.s",
-              "oic.if.baseline"
-            ],
-            "policy": 3
-          },
-          {
-            "uri": "/capability/mediaPlaybackShuffle/main/0",
-            "types": [
-              "x.com.st.mediashuffle"
             ],
             "interfaces": [
               "oic.if.a",
@@ -155,23 +119,6 @@
       ]
     },
     {
-      "type": "x.com.st.mediainputsource",
-      "properties": [
-        {
-          "key": "modes",
-          "type": 8,
-          "mandatory": true,
-          "rw": 3
-        },
-        {
-          "key": "supportedModes",
-          "type": 8,
-          "mandatory": true,
-          "rw": 1
-        }
-      ]
-    },
-    {
       "type": "x.com.st.mediaplayer",
       "properties": [
         {
@@ -202,34 +149,6 @@
           "type": 8,
           "mandatory": true,
           "rw": 1
-        }
-      ]
-    },
-    {
-      "type": "x.com.st.mediarepeat",
-      "properties": [
-        {
-          "key": "modes",
-          "type": 8,
-          "mandatory": true,
-          "rw": 3
-        },
-        {
-          "key": "supportedModes",
-          "type": 8,
-          "mandatory": true,
-          "rw": 1
-        }
-      ]
-    },
-    {
-      "type": "x.com.st.mediashuffle",
-      "properties": [
-        {
-          "key": "mode",
-          "type": 3,
-          "mandatory": true,
-          "rw": 3
         }
       ]
     },
